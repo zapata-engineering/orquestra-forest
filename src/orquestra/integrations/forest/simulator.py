@@ -17,8 +17,6 @@ class ForestSimulator(QuantumSimulator):
 
     def run_circuit_and_measure(self, circuit, **kwargs):
         '''
-        TODO: fix dosctrings
-        TODO: refactor so the interface for devices and simulators is the same.
         Run a circuit and measure a certain number of bitstrings. Note: the number
         of bitstrings measured is derived from self.n_samples
 
@@ -34,11 +32,9 @@ class ForestSimulator(QuantumSimulator):
 
         # Store the bitstrings as a list of tuples, with each tuple representing one bitstring
         bitstrings = [tuple(b) for b in bitstrings.tolist()]
-        # TODO: return "measurement set" object?
         return bitstrings
 
     def get_expectation_values(self, circuit, qubit_operator, use_coefficients=True, **kwargs):
-        # TODO: docs
         if self.device_name == 'wavefunction-simulator' and self.n_samples==None:
             return self.get_exact_expectation_values(circuit, qubit_operator, **kwargs)
         else:
@@ -50,7 +46,6 @@ class ForestSimulator(QuantumSimulator):
             return expectation_values
             
     def get_exact_expectation_values(self, circuit, qubit_operator, **kwargs):
-        # TODO: docs
         if self.device_name != 'wavefunction-simulator' and self.n_samples!=None:
             raise Exception("Exact expectation values work only for the wavefunction simulator and n_samples equal to None.")
         cxn = get_forest_connection(self.device_name)
@@ -71,7 +66,6 @@ class ForestSimulator(QuantumSimulator):
         return wavefunction
 
 
-# TODO should be class method or not?
 def get_forest_connection(device_name):
     '''Get a connection to a forest backend
 
