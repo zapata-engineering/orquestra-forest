@@ -34,13 +34,13 @@ class ForestSimulator(QuantumSimulator):
         bitstrings = [tuple(b) for b in bitstrings.tolist()]
         return bitstrings
 
-    def get_expectation_values(self, circuit, qubit_operator, use_coefficients=True, **kwargs):
+    def get_expectation_values(self, circuit, qubit_operator, **kwargs):
         if self.device_name == 'wavefunction-simulator' and self.n_samples==None:
             return self.get_exact_expectation_values(circuit, qubit_operator, **kwargs)
         else:
             measurements = self.run_circuit_and_measure(circuit, nthreads=self.nthreads)
             expectation_values = get_expectation_values_from_measurements(
-                                    measurements, qubit_operator, use_coefficients=use_coefficients)
+                                    measurements, qubit_operator)
 
             expectation_values = expectation_values_to_real(expectation_values)
             return expectation_values
