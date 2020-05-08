@@ -51,8 +51,8 @@ class TestForest(unittest.TestCase):
             simulator.n_samples = 100
             measurements = simulator.run_circuit_and_measure(circuit)
             # Then
-            self.assertEqual(len(measurements), 100)
-            self.assertEqual(len(measurements[0]), 3)
+            self.assertEqual(len(measurements.bitstrings), 100)
+            self.assertEqual(len(measurements.bitstrings[0]), 3)
 
     def test_get_bitstring_distribution(self):
         for simulator in self.all_simulators:

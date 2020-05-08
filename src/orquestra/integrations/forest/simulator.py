@@ -4,7 +4,8 @@ import numpy as np
 from zquantum.core.interfaces.backend import QuantumSimulator
 from zquantum.core.circuit import save_circuit
 from zquantum.core.measurement import (load_wavefunction, load_expectation_values, sample_from_wavefunction,
-                                        ExpectationValues, get_expectation_values_from_measurements, expectation_values_to_real)
+                                        ExpectationValues, get_expectation_values_from_measurements, expectation_values_to_real,
+                                        Measurements)
 from forestopenfermion import qubitop_to_pyquilpauli
 from pyquil.api import WavefunctionSimulator, get_qc
 
@@ -32,7 +33,7 @@ class ForestSimulator(QuantumSimulator):
 
         # Store the bitstrings as a list of tuples, with each tuple representing one bitstring
         bitstrings = [tuple(b) for b in bitstrings.tolist()]
-        return bitstrings
+        return Measurements(bitstrings)
 
     def get_expectation_values(self, circuit, qubit_operator, **kwargs):
         if self.device_name == 'wavefunction-simulator' and self.n_samples==None:
