@@ -55,7 +55,8 @@ class ForestSimulator(QuantumSimulator):
             return ExpectationValues(np.zeros((0,)))
 
         pauli_sum = qubitop_to_pyquilpauli(qubit_operator)
-        expectation_values = cxn.expectation(circuit.to_pyquil(), pauli_sum.terms)
+        expectation_values = np.real(cxn.expectation(circuit.to_pyquil(), pauli_sum.terms))
+        
         if expectation_values.shape[0] != len(pauli_sum):
             raise(RuntimeError("Expected {} expectation values but received {}.".format(len(pauli_sum), expectation_values.shape[0])))
         return ExpectationValues(expectation_values)
