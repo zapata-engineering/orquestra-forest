@@ -3,9 +3,14 @@ import os
 import numpy as np
 from zquantum.core.interfaces.backend import QuantumSimulator
 from zquantum.core.circuit import save_circuit
-from zquantum.core.measurement import (load_wavefunction, load_expectation_values, sample_from_wavefunction,
-                                        ExpectationValues, expectation_values_to_real,
-                                        Measurements)
+from zquantum.core.measurement import (
+    load_wavefunction,
+    load_expectation_values,
+    sample_from_wavefunction,
+    ExpectationValues,
+    expectation_values_to_real,
+    Measurements,
+)
 from forestopenfermion import qubitop_to_pyquilpauli
 from pyquil.api import WavefunctionSimulator, get_qc
 
@@ -17,15 +22,14 @@ class ForestSimulator(QuantumSimulator):
         self.device_name = device_name
 
     def run_circuit_and_measure(self, circuit, **kwargs):
-        '''
-        Run a circuit and measure a certain number of bitstrings. Note: the number
+        """Run a circuit and measure a certain number of bitstrings. Note: the number
         of bitstrings measured is derived from self.n_samples
 
         Args:
             circuit (zquantum.core.circuit.Circuit): the circuit to prepare the state
         Returns:
             a list of bitstrings (a list of tuples)
-        '''
+        """
         cxn = get_forest_connection(self.device_name)
         bitstrings = cxn.run_and_measure(circuit.to_pyquil(), trials=self.n_samples)
         if isinstance(bitstrings, dict):
@@ -36,7 +40,7 @@ class ForestSimulator(QuantumSimulator):
         return Measurements(bitstrings)
 
     def get_expectation_values(self, circuit, qubit_operator, **kwargs):
-        if self.device_name == 'wavefunction-simulator' and self.n_samples==None:
+        if self.device_name == "wavefunction-simulator" and self.n_samples is None:
             return self.get_exact_expectation_values(circuit, qubit_operator, **kwargs)
         else:
             measurements = self.run_circuit_and_measure(circuit, nthreads=self.nthreads)
@@ -44,10 +48,13 @@ class ForestSimulator(QuantumSimulator):
 
             expectation_values = expectation_values_to_real(expectation_values)
             return expectation_values
-            
+
     def get_exact_expectation_values(self, circuit, qubit_operator, **kwargs):
-        if self.device_name != 'wavefunction-simulator' and self.n_samples!=None:
-            raise Exception("Exact expectation values work only for the wavefunction simulator and n_samples equal to None.")
+        if self.device_name != "wavefunction-simulator" or self.n_samples is not None:
+            raise Exception(
+                f"""To compute exact expectation values, (i) the device name must be "wavefunction-simulator" and (ii) n_samples 
+                    must be None. The device name is currently {self.device_name} and n_samples is {self.n_samples}."""
+            )
         cxn = get_forest_connection(self.device_name)
 
         # Pyquil does not support PauliSums with no terms.
@@ -55,10 +62,18 @@ class ForestSimulator(QuantumSimulator):
             return ExpectationValues(np.zeros((0,)))
 
         pauli_sum = qubitop_to_pyquilpauli(qubit_operator)
-        expectation_values = np.real(cxn.expectation(circuit.to_pyquil(), pauli_sum.terms))
-        
+        expectation_values = np.real(
+            cxn.expectation(circuit.to_pyquil(), pauli_sum.terms)
+        )
+
         if expectation_values.shape[0] != len(pauli_sum):
-            raise(RuntimeError("Expected {} expectation values but received {}.".format(len(pauli_sum), expectation_values.shape[0])))
+            raise (
+                RuntimeError(
+                    "Expected {} expectation values but received {}.".format(
+                        len(pauli_sum), expectation_values.shape[0]
+                    )
+                )
+            )
         return ExpectationValues(expectation_values)
 
     def get_wavefunction(self, circuit):
@@ -68,15 +83,15 @@ class ForestSimulator(QuantumSimulator):
 
 
 def get_forest_connection(device_name):
-    '''Get a connection to a forest backend
+    """Get a connection to a forest backend
 
     Args:
         device_name (string): the device to connect to
 
     Returns:
         A connection to either a pyquil simulator or a QPU
-    '''
-    if device_name == 'wavefunction-simulator':
+    """
+    if device_name == "wavefunction-simulator":
         return WavefunctionSimulator()
     else:
         return get_qc(device_name)
