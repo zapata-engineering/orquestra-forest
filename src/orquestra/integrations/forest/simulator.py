@@ -22,8 +22,7 @@ class ForestSimulator(QuantumSimulator):
         self.device_name = device_name
 
     def run_circuit_and_measure(self, circuit, **kwargs):
-        """
-        Run a circuit and measure a certain number of bitstrings. Note: the number
+        """Run a circuit and measure a certain number of bitstrings. Note: the number
         of bitstrings measured is derived from self.n_samples
 
         Args:
@@ -41,7 +40,7 @@ class ForestSimulator(QuantumSimulator):
         return Measurements(bitstrings)
 
     def get_expectation_values(self, circuit, qubit_operator, **kwargs):
-        if self.device_name == "wavefunction-simulator" and self.n_samples == None:
+        if self.device_name == "wavefunction-simulator" and self.n_samples is None:
             return self.get_exact_expectation_values(circuit, qubit_operator, **kwargs)
         else:
             measurements = self.run_circuit_and_measure(circuit, nthreads=self.nthreads)
@@ -51,7 +50,7 @@ class ForestSimulator(QuantumSimulator):
             return expectation_values
 
     def get_exact_expectation_values(self, circuit, qubit_operator, **kwargs):
-        if self.device_name != "wavefunction-simulator" or self.n_samples != None:
+        if self.device_name != "wavefunction-simulator" or self.n_samples is not None:
             raise Exception(
                 f"""To compute exact expectation values, (i) the device name must be "wavefunction-simulator" and (ii) n_samples 
                     must be None. The device name is currently {self.device_name} and n_samples is {self.n_samples}."""
