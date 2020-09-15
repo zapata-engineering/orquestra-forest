@@ -13,6 +13,7 @@ from zquantum.core.measurement import (
 )
 from forestopenfermion import qubitop_to_pyquilpauli
 from pyquil.api import WavefunctionSimulator, get_qc
+import subprocess
 
 
 class ForestSimulator(QuantumSimulator):
@@ -20,6 +21,8 @@ class ForestSimulator(QuantumSimulator):
         self.nthreads = nthreads
         self.n_samples = n_samples
         self.device_name = device_name
+        subprocess.Popen(["qvm", "-S"])
+        subprocess.Popen(["quilc", "-S"])
 
     def run_circuit_and_measure(self, circuit, **kwargs):
         """Run a circuit and measure a certain number of bitstrings. Note: the number
