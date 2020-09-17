@@ -13,6 +13,8 @@ from zquantum.core.measurement import (
 )
 from forestopenfermion import qubitop_to_pyquilpauli
 from pyquil.api import WavefunctionSimulator, get_qc
+import subprocess
+import socket, errno
 
 
 class ForestSimulator(QuantumSimulator):
@@ -20,6 +22,27 @@ class ForestSimulator(QuantumSimulator):
         self.nthreads = nthreads
         self.n_samples = n_samples
         self.device_name = device_name
+
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        try:
+            s.bind(("127.0.0.1", 5000))
+            subprocess.Popen(["qvm", "-S"])
+        except socket.error as e:
+            if e.errno == errno.EADDRINUSE:
+                print("QVM is already running")
+            else:
+                print(e)
+        try:
+            s.bind(("127.0.0.1", 5555))
+            subprocess.Popen(["quilc", "-S"])
+        except socket.error as e:
+            if e.errno == errno.EADDRINUSE:
+                print("Quilc is already running")
+            else:
+                print(e)
+
+        s.close()
 
     def run_circuit_and_measure(self, circuit, **kwargs):
         """Run a circuit and measure a certain number of bitstrings. Note: the number
