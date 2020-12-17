@@ -13,6 +13,8 @@ from zquantum.core.measurement import (
 )
 from forestopenfermion import qubitop_to_pyquilpauli
 from pyquil.api import WavefunctionSimulator, get_qc
+import subprocess
+import socket, errno
 
 
 class ForestSimulator(QuantumSimulator):
@@ -21,9 +23,29 @@ class ForestSimulator(QuantumSimulator):
         self.n_samples = n_samples
         self.device_name = device_name
 
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        try:
+            s.bind(("127.0.0.1", 5000))
+            subprocess.Popen(["qvm", "-S"])
+        except socket.error as e:
+            if e.errno == errno.EADDRINUSE:
+                print("QVM is already running")
+            else:
+                print(e)
+        try:
+            s.bind(("127.0.0.1", 5555))
+            subprocess.Popen(["quilc", "-S"])
+        except socket.error as e:
+            if e.errno == errno.EADDRINUSE:
+                print("Quilc is already running")
+            else:
+                print(e)
+
+        s.close()
+
     def run_circuit_and_measure(self, circuit, **kwargs):
-        """
-        Run a circuit and measure a certain number of bitstrings. Note: the number
+        """Run a circuit and measure a certain number of bitstrings. Note: the number
         of bitstrings measured is derived from self.n_samples
 
         Args:
@@ -41,7 +63,7 @@ class ForestSimulator(QuantumSimulator):
         return Measurements(bitstrings)
 
     def get_expectation_values(self, circuit, qubit_operator, **kwargs):
-        if self.device_name == "wavefunction-simulator" and self.n_samples == None:
+        if self.device_name == "wavefunction-simulator" and self.n_samples is None:
             return self.get_exact_expectation_values(circuit, qubit_operator, **kwargs)
         else:
             measurements = self.run_circuit_and_measure(circuit, nthreads=self.nthreads)
@@ -51,9 +73,10 @@ class ForestSimulator(QuantumSimulator):
             return expectation_values
 
     def get_exact_expectation_values(self, circuit, qubit_operator, **kwargs):
-        if self.device_name != "wavefunction-simulator" and self.n_samples != None:
+        if self.device_name != "wavefunction-simulator" or self.n_samples is not None:
             raise Exception(
-                "Exact expectation values work only for the wavefunction simulator and n_samples equal to None."
+                f"""To compute exact expectation values, (i) the device name must be "wavefunction-simulator" and (ii) n_samples 
+                    must be None. The device name is currently {self.device_name} and n_samples is {self.n_samples}."""
             )
         cxn = get_forest_connection(self.device_name)
 
