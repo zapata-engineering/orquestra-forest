@@ -44,6 +44,7 @@ class TestForest(QuantumSimulatorTests):
         with pytest.raises(Exception):
             wf_simulator.get_exact_expectation_values(circuit, operator)
 
+
     def test_multiple_simulators_does_not_cause_errors(self):
         simulator1 = ForestSimulator("wavefunction-simulator")
         simulator2 = ForestSimulator("wavefunction-simulator")
