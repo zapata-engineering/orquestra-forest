@@ -1,4 +1,4 @@
-import unittest
+import pytest
 import numpy as np
 from zquantum.core.circuit import Circuit
 from zquantum.core.bitstring_distribution import BitstringDistribution
@@ -8,13 +8,26 @@ from .simulator import ForestSimulator
 from pyquil import Program
 from pyquil.gates import H, CNOT, RX, CZ, X
 
-class TestForest(unittest.TestCase, QuantumSimulatorTests):
 
-    def setUp(self):
-        self.wf_simulator = ForestSimulator("wavefunction-simulator")
-        self.sampling_simulator = ForestSimulator("3q-qvm", n_samples=10000)
-        self.noisy_simulator = ForestSimulator("3q-noisy-qvm", n_samples=10000)
+@pytest.fixture(
+    params=[
+        {"device_name": "wavefunction-simulator"},
+        {"device_name": "3q-qvm", "n_samples": 10000},
+        {"device_name": "3q-noisy-qvm", "n_samples": 10000},
+    ]
+)
+def backend(request):
+    return ForestSimulator(**request.param)
 
-        # Inherited tests
-        self.backends = [self.sampling_simulator, self.noisy_simulator, self.wf_simulator]
-        self.wf_simulators = [self.wf_simulator]
+
+@pytest.fixture(
+    params=[
+        {"device_name": "wavefunction-simulator"},
+    ]
+)
+def wf_simulator(request):
+    return ForestSimulator(**request.param)
+
+
+class TestForest(QuantumSimulatorTests):
+    pass
