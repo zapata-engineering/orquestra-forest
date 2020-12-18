@@ -56,7 +56,7 @@ class ForestSimulator(QuantumSimulator):
         cxn = get_forest_connection(self.device_name)
         bitstrings = cxn.run_and_measure(circuit.to_pyquil(), trials=self.n_samples)
         if isinstance(bitstrings, dict):
-            bitstrings = np.vstack(bitstrings[q] for q in sorted(cxn.qubits())).T
+            bitstrings = np.vstack([bitstrings[q] for q in sorted(cxn.qubits())]).T
 
         # Store the bitstrings as a list of tuples, with each tuple representing one bitstring
         bitstrings = [tuple(b) for b in bitstrings.tolist()]
