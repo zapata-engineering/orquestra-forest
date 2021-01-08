@@ -1,7 +1,11 @@
 import pytest
 import numpy as np
 from zquantum.core.circuit import Circuit
-from zquantum.core.interfaces.backend_test import QuantumSimulatorTests
+from zquantum.core.interfaces.backend_test import (
+    QuantumSimulatorTests,
+    QuantumBackendGatesTests,
+    QuantumSimulatorGatesTest,
+)
 from openfermion.ops import QubitOperator
 from .simulator import ForestSimulator
 from pyquil import Program
@@ -16,6 +20,15 @@ from pyquil.gates import X
     ]
 )
 def backend(request):
+    return ForestSimulator(**request.param)
+
+
+@pytest.fixture(
+    params=[
+        {"device_name": "3q-qvm", "n_samples": 1000},
+    ]
+)
+def backend_for_gates_test(request):
     return ForestSimulator(**request.param)
 
 
@@ -44,7 +57,10 @@ class TestForest(QuantumSimulatorTests):
         with pytest.raises(Exception):
             wf_simulator.get_exact_expectation_values(circuit, operator)
 
-
     def test_multiple_simulators_does_not_cause_errors(self):
         simulator1 = ForestSimulator("wavefunction-simulator")
         simulator2 = ForestSimulator("wavefunction-simulator")
+
+
+class TestForestGates(QuantumSimulatorGatesTest):
+    pass
