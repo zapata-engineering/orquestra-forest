@@ -19,6 +19,7 @@ import socket, errno
 
 class ForestSimulator(QuantumSimulator):
     def __init__(self, device_name, n_samples=None, nthreads=1):
+        super().__init__(n_samples)
         self.nthreads = nthreads
         self.n_samples = n_samples
         self.device_name = device_name
@@ -53,6 +54,7 @@ class ForestSimulator(QuantumSimulator):
         Returns:
             a list of bitstrings (a list of tuples)
         """
+        super().run_circuit_and_measure(circuit)
         cxn = get_forest_connection(self.device_name)
         bitstrings = cxn.run_and_measure(circuit.to_pyquil(), trials=self.n_samples)
         if isinstance(bitstrings, dict):
@@ -62,17 +64,9 @@ class ForestSimulator(QuantumSimulator):
         bitstrings = [tuple(b) for b in bitstrings.tolist()]
         return Measurements(bitstrings)
 
-    def get_expectation_values(self, circuit, qubit_operator, **kwargs):
-        if self.device_name == "wavefunction-simulator" and self.n_samples is None:
-            return self.get_exact_expectation_values(circuit, qubit_operator, **kwargs)
-        else:
-            measurements = self.run_circuit_and_measure(circuit, nthreads=self.nthreads)
-            expectation_values = measurements.get_expectation_values(qubit_operator)
-
-            expectation_values = expectation_values_to_real(expectation_values)
-            return expectation_values
-
     def get_exact_expectation_values(self, circuit, qubit_operator, **kwargs):
+        self.number_of_jobs_run += 1
+        self.number_of_circuits_run += 1
         if self.device_name != "wavefunction-simulator" or self.n_samples is not None:
             raise Exception(
                 f"""To compute exact expectation values, (i) the device name must be "wavefunction-simulator" and (ii) n_samples 
@@ -100,6 +94,7 @@ class ForestSimulator(QuantumSimulator):
         return ExpectationValues(expectation_values)
 
     def get_wavefunction(self, circuit):
+        super().get_wavefunction(circuit)
         cxn = get_forest_connection(self.device_name)
         wavefunction = cxn.wavefunction(circuit.to_pyquil())
         return wavefunction
