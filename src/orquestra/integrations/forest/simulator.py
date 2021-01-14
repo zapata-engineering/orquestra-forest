@@ -18,6 +18,8 @@ import socket, errno
 
 
 class ForestSimulator(QuantumSimulator):
+    supports_batching = False
+
     def __init__(self, device_name, n_samples=None, nthreads=1):
         super().__init__(n_samples)
         self.nthreads = nthreads
