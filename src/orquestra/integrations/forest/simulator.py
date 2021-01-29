@@ -11,7 +11,7 @@ from zquantum.core.measurement import (
     expectation_values_to_real,
     Measurements,
 )
-from forestopenfermion import qubitop_to_pyquilpauli
+from zquantum.core.openfermion import qubitop_to_pyquilpauli
 from pyquil.api import WavefunctionSimulator, get_qc
 import subprocess
 import socket, errno
