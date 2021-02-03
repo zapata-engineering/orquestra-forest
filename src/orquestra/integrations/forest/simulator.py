@@ -47,18 +47,22 @@ class ForestSimulator(QuantumSimulator):
 
         s.close()
 
-    def run_circuit_and_measure(self, circuit, **kwargs):
+    def run_circuit_and_measure(self, circuit, n_samples=None, **kwargs):
         """Run a circuit and measure a certain number of bitstrings. Note: the number
         of bitstrings measured is derived from self.n_samples
 
         Args:
             circuit (zquantum.core.circuit.Circuit): the circuit to prepare the state
+            n_samples (int): The number of samples to measure. If None, then the
+                number of samples is taken from the n_samples attribute.
         Returns:
             a list of bitstrings (a list of tuples)
         """
+        if n_samples is None:
+            n_samples = self.n_samples
         super().run_circuit_and_measure(circuit)
         cxn = get_forest_connection(self.device_name)
-        bitstrings = cxn.run_and_measure(circuit.to_pyquil(), trials=self.n_samples)
+        bitstrings = cxn.run_and_measure(circuit.to_pyquil(), trials=n_samples)
         if isinstance(bitstrings, dict):
             bitstrings = np.vstack([bitstrings[q] for q in sorted(cxn.qubits())]).T
 
