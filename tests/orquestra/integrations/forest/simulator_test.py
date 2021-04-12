@@ -7,7 +7,7 @@ from zquantum.core.interfaces.backend_test import (
     QuantumSimulatorGatesTest,
 )
 from openfermion.ops import QubitOperator
-from .simulator import ForestSimulator
+from qeforest.simulator import ForestSimulator
 from pyquil import Program
 from pyquil.gates import X
 
