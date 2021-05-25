@@ -9,7 +9,7 @@ from zquantum.core.interfaces.backend_test import (
 from openfermion.ops import QubitOperator
 from qeforest.simulator import ForestSimulator
 from pyquil import Program
-from pyquil.gates import X
+from pyquil.gates import X, CNOT, H
 
 
 @pytest.fixture(
@@ -60,6 +60,20 @@ class TestForest(QuantumSimulatorTests):
     def test_multiple_simulators_does_not_cause_errors(self):
         simulator1 = ForestSimulator("wavefunction-simulator")
         simulator2 = ForestSimulator("wavefunction-simulator")
+
+    def test_get_wavefunction_seed(self):
+        # Given
+        circuit = Circuit(Program(H(0), CNOT(0, 1), CNOT(1, 2)))
+        backend1 = ForestSimulator("wavefunction-simulator", seed=5324)
+        backend2 = ForestSimulator("wavefunction-simulator", seed=5324)
+
+        # When
+        wavefunction1 = backend1.get_wavefunction(circuit)
+        wavefunction2 = backend2.get_wavefunction(circuit)
+
+        # Then
+        for (ampl1, ampl2) in zip(wavefunction1.amplitudes, wavefunction2.amplitudes):
+            assert ampl1 == ampl2
 
 
 class TestForestGates(QuantumSimulatorGatesTest):
