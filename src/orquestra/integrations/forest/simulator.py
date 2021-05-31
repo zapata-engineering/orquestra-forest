@@ -11,7 +11,7 @@ from zquantum.core.measurement import (
     Measurements,
 )
 from zquantum.core.openfermion import qubitop_to_pyquilpauli
-from zquantum.core.wip.circuits import export_to_pyquil
+from zquantum.core.circuits import export_to_pyquil
 
 
 class ForestSimulator(QuantumSimulator):
