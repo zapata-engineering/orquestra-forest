@@ -1,9 +1,7 @@
 import pytest
-import numpy as np
-from zquantum.core.circuit import Circuit
+from zquantum.core.circuits import Circuit
 from zquantum.core.interfaces.backend_test import (
     QuantumSimulatorTests,
-    QuantumBackendGatesTests,
     QuantumSimulatorGatesTest,
 )
 from openfermion.ops import QubitOperator

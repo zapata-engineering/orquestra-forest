@@ -4,15 +4,14 @@ import subprocess
 
 import numpy as np
 from pyquil.api import WavefunctionSimulator, get_qc
-from zquantum.core.circuit import Circuit as OldCircuit
+from zquantum.core.circuits import Circuit
 from zquantum.core.interfaces.backend import QuantumSimulator
 from zquantum.core.measurement import (
     ExpectationValues,
     Measurements,
 )
 from zquantum.core.openfermion import qubitop_to_pyquilpauli
-from zquantum.core.wip.circuits import export_to_pyquil, new_circuit_from_old_circuit
-from zquantum.core.wip.compatibility_tools import compatible_with_old_type
+from zquantum.core.wip.circuits import export_to_pyquil
 
 
 class ForestSimulator(QuantumSimulator):
@@ -46,9 +45,6 @@ class ForestSimulator(QuantumSimulator):
 
         s.close()
 
-    @compatible_with_old_type(
-        old_type=OldCircuit, translate_old_to_wip=new_circuit_from_old_circuit
-    )
     def run_circuit_and_measure(self, circuit, n_samples=None, **kwargs):
         """Run a circuit and measure a certain number of bitstrings. Note: the number
         of bitstrings measured is derived from self.n_samples
@@ -71,9 +67,6 @@ class ForestSimulator(QuantumSimulator):
         bitstrings = [tuple(b) for b in bitstrings.tolist()]
         return Measurements(bitstrings)
 
-    @compatible_with_old_type(
-        old_type=OldCircuit, translate_old_to_wip=new_circuit_from_old_circuit
-    )
     def get_exact_expectation_values(self, circuit, qubit_operator, **kwargs):
         self.number_of_jobs_run += 1
         self.number_of_circuits_run += 1
@@ -103,9 +96,6 @@ class ForestSimulator(QuantumSimulator):
             )
         return ExpectationValues(expectation_values)
 
-    @compatible_with_old_type(
-        old_type=OldCircuit, translate_old_to_wip=new_circuit_from_old_circuit
-    )
     def get_wavefunction(self, circuit):
         super().get_wavefunction(circuit)
         cxn = get_forest_connection(self.device_name, self.seed)
