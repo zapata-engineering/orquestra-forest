@@ -1,15 +1,11 @@
 import pytest
-import numpy as np
-from zquantum.core.circuit import Circuit
+from zquantum.core.circuits import Circuit, X, CNOT, H
 from zquantum.core.interfaces.backend_test import (
     QuantumSimulatorTests,
-    QuantumBackendGatesTests,
     QuantumSimulatorGatesTest,
 )
 from openfermion.ops import QubitOperator
 from qeforest.simulator import ForestSimulator
-from pyquil import Program
-from pyquil.gates import X, CNOT, H
 
 
 @pytest.fixture(
@@ -46,14 +42,14 @@ class TestForest(QuantumSimulatorTests):
         if backend.device_name != "wavefunction-simulator":
             backend.n_samples = None
             operator = QubitOperator("Z0 Z1")
-            circuit = Circuit(Program([X(0), X(1)]))
+            circuit = Circuit([X(0), X(1)])
             with pytest.raises(Exception):
                 backend.get_exact_expectation_values(circuit, operator)
 
     def test_exact_expectation_values_with_n_samples(self, wf_simulator):
         wf_simulator.n_samples = 1000
         operator = QubitOperator("Z0 Z1")
-        circuit = Circuit(Program([X(0), X(1)]))
+        circuit = Circuit([X(0), X(1)])
         with pytest.raises(Exception):
             wf_simulator.get_exact_expectation_values(circuit, operator)
 
@@ -63,7 +59,7 @@ class TestForest(QuantumSimulatorTests):
 
     def test_get_wavefunction_seed(self):
         # Given
-        circuit = Circuit(Program(H(0), CNOT(0, 1), CNOT(1, 2)))
+        circuit = Circuit([H(0), CNOT(0, 1), CNOT(1, 2)])
         backend1 = ForestSimulator("wavefunction-simulator", seed=5324)
         backend2 = ForestSimulator("wavefunction-simulator", seed=5324)
 
@@ -77,4 +73,4 @@ class TestForest(QuantumSimulatorTests):
 
 
 class TestForestGates(QuantumSimulatorGatesTest):
-    pass
+    gates_to_exclude = ["XY"]
