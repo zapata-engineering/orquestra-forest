@@ -73,4 +73,4 @@ class TestForest(QuantumSimulatorTests):
 
 
 class TestForestGates(QuantumSimulatorGatesTest):
-    gates_to_exclude = ["XY"]
+    pass
