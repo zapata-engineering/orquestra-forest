@@ -4,23 +4,18 @@ import subprocess
 
 import numpy as np
 from pyquil.api import WavefunctionSimulator, get_qc
-from zquantum.core.circuits import Circuit
+from zquantum.core.circuits import Circuit, export_to_pyquil
 from zquantum.core.interfaces.backend import QuantumSimulator
-from zquantum.core.measurement import (
-    ExpectationValues,
-    Measurements,
-)
+from zquantum.core.measurement import ExpectationValues, Measurements
 from zquantum.core.openfermion import qubitop_to_pyquilpauli
-from zquantum.core.circuits import export_to_pyquil
 
 
 class ForestSimulator(QuantumSimulator):
     supports_batching = False
 
-    def __init__(self, device_name, n_samples=None, seed=None, nthreads=1):
-        super().__init__(n_samples)
+    def __init__(self, device_name, seed=None, nthreads=1):
+        super().__init__()
         self.nthreads = nthreads
-        self.n_samples = n_samples
         self.device_name = device_name
         self.seed = seed
 
@@ -45,20 +40,17 @@ class ForestSimulator(QuantumSimulator):
 
         s.close()
 
-    def run_circuit_and_measure(self, circuit, n_samples=None, **kwargs):
+    def run_circuit_and_measure(self, circuit, n_samples: int, **kwargs):
         """Run a circuit and measure a certain number of bitstrings. Note: the number
         of bitstrings measured is derived from self.n_samples
 
         Args:
             circuit: the circuit to prepare the state
-            n_samples: The number of samples to measure. If None, then the
-                number of samples is taken from the n_samples attribute.
+            n_samples: The number of samples to measure.
         Returns:
             a list of bitstrings (a list of tuples)
         """
-        if n_samples is None:
-            n_samples = self.n_samples
-        super().run_circuit_and_measure(circuit)
+        super().run_circuit_and_measure(circuit, n_samples=n_samples)
         cxn = get_forest_connection(self.device_name, self.seed)
         bitstrings = cxn.run_and_measure(export_to_pyquil(circuit), trials=n_samples)
         if isinstance(bitstrings, dict):
@@ -70,11 +62,11 @@ class ForestSimulator(QuantumSimulator):
     def get_exact_expectation_values(self, circuit, qubit_operator, **kwargs):
         self.number_of_jobs_run += 1
         self.number_of_circuits_run += 1
-        if self.device_name != "wavefunction-simulator" or self.n_samples is not None:
+        if self.device_name != "wavefunction-simulator":
             raise RuntimeError(
-                "To compute exact expectation values, (i) the device name must be "
-                '"wavefunction-simulator" and (ii) n_samples must be None. The device '
-                f"name is currently {self.device_name} and n_samples is {self.n_samples}."
+                "To compute exact expectation values, the device name must be "
+                '"wavefunction-simulator". The device name is currently '
+                f"{self.device_name}."
             )
         cxn = get_forest_connection(self.device_name, self.seed)
 
