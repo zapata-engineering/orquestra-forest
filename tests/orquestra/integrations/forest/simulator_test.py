@@ -1,18 +1,18 @@
 import pytest
-from zquantum.core.circuits import Circuit, X, CNOT, H
-from zquantum.core.interfaces.backend_test import (
-    QuantumSimulatorTests,
-    QuantumSimulatorGatesTest,
-)
 from openfermion.ops import QubitOperator
 from qeforest.simulator import ForestSimulator
+from zquantum.core.circuits import CNOT, Circuit, H, X
+from zquantum.core.interfaces.backend_test import (
+    QuantumSimulatorGatesTest,
+    QuantumSimulatorTests,
+)
 
 
 @pytest.fixture(
     params=[
         {"device_name": "wavefunction-simulator"},
-        {"device_name": "3q-qvm", "n_samples": 10000},
-        {"device_name": "3q-noisy-qvm", "n_samples": 10000},
+        {"device_name": "3q-qvm"},
+        {"device_name": "3q-noisy-qvm"},
     ]
 )
 def backend(request):
@@ -21,7 +21,7 @@ def backend(request):
 
 @pytest.fixture(
     params=[
-        {"device_name": "3q-qvm", "n_samples": 1000},
+        {"device_name": "3q-qvm"},
     ]
 )
 def backend_for_gates_test(request):
@@ -40,18 +40,10 @@ def wf_simulator(request):
 class TestForest(QuantumSimulatorTests):
     def test_exact_expectation_values_without_wavefunction_simulator(self, backend):
         if backend.device_name != "wavefunction-simulator":
-            backend.n_samples = None
             operator = QubitOperator("Z0 Z1")
             circuit = Circuit([X(0), X(1)])
             with pytest.raises(Exception):
                 backend.get_exact_expectation_values(circuit, operator)
-
-    def test_exact_expectation_values_with_n_samples(self, wf_simulator):
-        wf_simulator.n_samples = 1000
-        operator = QubitOperator("Z0 Z1")
-        circuit = Circuit([X(0), X(1)])
-        with pytest.raises(Exception):
-            wf_simulator.get_exact_expectation_values(circuit, operator)
 
     def test_multiple_simulators_does_not_cause_errors(self):
         simulator1 = ForestSimulator("wavefunction-simulator")
