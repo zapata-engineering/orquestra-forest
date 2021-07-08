@@ -40,7 +40,7 @@ class ForestSimulator(QuantumSimulator):
 
         s.close()
 
-    def run_circuit_and_measure(self, circuit, n_samples: int, **kwargs):
+    def run_circuit_and_measure(self, circuit, n_samples: int):
         """Run a circuit and measure a certain number of bitstrings. Note: the number
         of bitstrings measured is derived from self.n_samples
 
@@ -59,7 +59,7 @@ class ForestSimulator(QuantumSimulator):
         bitstrings = [tuple(b) for b in bitstrings.tolist()]
         return Measurements(bitstrings)
 
-    def get_exact_expectation_values(self, circuit, qubit_operator, **kwargs):
+    def get_exact_expectation_values(self, circuit, qubit_operator):
         self.number_of_jobs_run += 1
         self.number_of_circuits_run += 1
         if self.device_name != "wavefunction-simulator":
