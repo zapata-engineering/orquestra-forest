@@ -5,7 +5,8 @@ import subprocess
 import numpy as np
 from pyquil.api import WavefunctionSimulator, get_qc
 from zquantum.core.circuits import Circuit
-from zquantum.core.interfaces.backend import QuantumSimulator, flip_wavefunction
+from zquantum.core.interfaces.backend import QuantumSimulator
+from zquantum.core.wavefunction import flip_wavefunction
 from zquantum.core.measurement import ExpectationValues, Measurements
 from qeforest.conversions import export_to_pyquil, qubitop_to_pyquilpauli
 
