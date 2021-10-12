@@ -66,23 +66,6 @@ class TestForest(QuantumSimulatorTests):
         for (ampl1, ampl2) in zip(wavefunction1.amplitudes, wavefunction2.amplitudes):
             assert ampl1 == ampl2
 
-    def test_get_wavefunction(self, wf_simulator):
-        # Given
-        wf_simulator.number_of_circuits_run = 0
-        wf_simulator.number_of_jobs_run = 0
-        circuit = Circuit([H(0), CNOT(0, 1), CNOT(1, 2)])
-
-        # When
-        wavefunction = wf_simulator.get_wavefunction(circuit)
-
-        # Then
-        assert isinstance(wavefunction, Wavefunction)
-        assert len(wavefunction.probabilities()) == 8
-        assert wavefunction[0] == pytest.approx((1 / np.sqrt(2) + 0j), abs=1e-7)
-        assert wavefunction[7] == pytest.approx((1 / np.sqrt(2) + 0j), abs=1e-7)
-        assert wf_simulator.number_of_circuits_run == 1
-        assert wf_simulator.number_of_jobs_run == 1
-
 
 class TestForestGates(QuantumSimulatorGatesTest):
     pass
