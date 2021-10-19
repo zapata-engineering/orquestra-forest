@@ -90,9 +90,9 @@ class ForestSimulator(QuantumSimulator):
         return ExpectationValues(expectation_values)
 
     def _get_wavefunction_from_native_circuit(
-        self, circuit: Circuit, state: StateVector
+        self, circuit: Circuit, initial_state: StateVector
     ) -> StateVector:
-        if not np.array_equal(state, [1] + [0] * (len(state) - 1)):
+        if not np.array_equal(initial_state, [1] + [0] * (len(initial_state) - 1)):
             raise ValueError(
                 "ForestSimulator does not support starting simulations from state "
                 "other than |0>. In particular, it currently does not support "
