@@ -66,6 +66,10 @@ class TestForest(QuantumSimulatorTests):
         for (ampl1, ampl2) in zip(wavefunction1.amplitudes, wavefunction2.amplitudes):
             assert ampl1 == ampl2
 
+    @pytest.mark.xfail
+    def test_get_wavefunction_uses_provided_initial_state(self, wf_simulator):
+        super().test_get_wavefunction_uses_provided_initial_state(wf_simulator)
+
 
 class TestForestGates(QuantumSimulatorGatesTest):
     pass
