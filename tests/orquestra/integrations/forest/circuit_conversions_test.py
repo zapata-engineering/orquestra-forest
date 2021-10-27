@@ -2,8 +2,8 @@ import numpy as np
 import pyquil
 import pytest
 import sympy
-from zquantum.core.circuits import _builtin_gates, _circuit, _gates
 from qeforest.conversions import export_to_pyquil, import_from_pyquil
+from zquantum.core.circuits import _builtin_gates, _circuit, _gates
 
 SYMPY_GAMMA = sympy.Symbol("gamma")
 QUIL_GAMMA = pyquil.quil.Parameter("gamma")

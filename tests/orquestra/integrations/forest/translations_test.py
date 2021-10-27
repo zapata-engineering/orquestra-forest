@@ -2,10 +2,7 @@
 import pytest
 import sympy
 from pyquil import quil, quilatom
-from qeforest.conversions._expressions import (
-    QUIL_DIALECT,
-    expression_from_pyquil,
-)
+from qeforest.conversions._expressions import QUIL_DIALECT, expression_from_pyquil
 from zquantum.core.circuits.symbolic.sympy_expressions import (
     SYMPY_DIALECT,
     expression_from_sympy,
