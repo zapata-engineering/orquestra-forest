@@ -49,8 +49,8 @@ class TestForest(QuantumSimulatorTests):
                 backend.get_exact_expectation_values(circuit, operator)
 
     def test_multiple_simulators_does_not_cause_errors(self):
-        simulator1 = ForestSimulator("wavefunction-simulator")
-        simulator2 = ForestSimulator("wavefunction-simulator")
+        simulator1 = ForestSimulator("wavefunction-simulator")  # noqa: F841
+        simulator2 = ForestSimulator("wavefunction-simulator")  # noqa: F841
 
     def test_get_wavefunction_seed(self):
         # Given
