@@ -4,11 +4,12 @@ import subprocess
 
 import numpy as np
 from pyquil.api import WavefunctionSimulator, get_qc
-from qeforest.conversions import export_to_pyquil, qubitop_to_pyquilpauli
 from zquantum.core.circuits import Circuit
 from zquantum.core.interfaces.backend import QuantumSimulator, StateVector
 from zquantum.core.measurement import ExpectationValues, Measurements
 from zquantum.core.wavefunction import flip_amplitudes
+
+from qeforest.conversions import export_to_pyquil, qubitop_to_pyquilpauli
 
 
 class ForestSimulator(QuantumSimulator):
@@ -102,6 +103,11 @@ class ForestSimulator(QuantumSimulator):
         cxn = get_forest_connection(self.device_name, self.seed)
         wavefunction = cxn.wavefunction(export_to_pyquil(circuit))
         return flip_amplitudes(wavefunction.amplitudes)
+
+
+def kill_subprocesses():
+    subprocess.run(["pkill", "qvm"])
+    subprocess.run(["pkill", "quilc"])
 
 
 def get_forest_connection(device_name: str, seed=None):
