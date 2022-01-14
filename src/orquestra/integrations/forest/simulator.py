@@ -6,12 +6,11 @@ import warnings
 import numpy as np
 from openfermion.ops import QubitOperator
 from pyquil.api import WavefunctionSimulator, get_qc
+from qeforest.conversions import export_to_pyquil, qubitop_to_pyquilpauli
 from zquantum.core.circuits import Circuit
 from zquantum.core.interfaces.backend import QuantumSimulator, StateVector
 from zquantum.core.measurement import ExpectationValues, Measurements
 from zquantum.core.wavefunction import flip_amplitudes
-
-from qeforest.conversions import export_to_pyquil, qubitop_to_pyquilpauli
 
 
 class ForestSimulator(QuantumSimulator):

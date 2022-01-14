@@ -1,16 +1,11 @@
-from os import kill
-
-import numpy as np
 import pytest
 from openfermion.ops import QubitOperator
-from pyquil.wavefunction import Wavefunction
+from qeforest.simulator import ForestSimulator
 from zquantum.core.circuits import CNOT, Circuit, H, X
 from zquantum.core.interfaces.backend_test import (
     QuantumSimulatorGatesTest,
     QuantumSimulatorTests,
 )
-
-from qeforest.simulator import ForestSimulator
 
 
 @pytest.fixture(
