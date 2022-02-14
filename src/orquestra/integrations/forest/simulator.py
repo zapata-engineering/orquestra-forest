@@ -1,8 +1,10 @@
 import errno
 import socket
 import subprocess
+import warnings
 
 import numpy as np
+from openfermion.ops import QubitOperator
 from pyquil.api import WavefunctionSimulator, get_qc
 from qeforest.conversions import export_to_pyquil, qubitop_to_pyquilpauli
 from zquantum.core.circuits import Circuit
@@ -14,7 +16,7 @@ from zquantum.core.wavefunction import flip_amplitudes
 class ForestSimulator(QuantumSimulator):
     supports_batching = False
 
-    def __init__(self, device_name, seed=None, nthreads=1):
+    def __init__(self, device_name: str, seed: int = None, nthreads: int = 1):
         super().__init__()
         self.nthreads = nthreads
         self.device_name = device_name
@@ -27,21 +29,26 @@ class ForestSimulator(QuantumSimulator):
             subprocess.Popen(["qvm", "-S"])
         except socket.error as e:
             if e.errno == errno.EADDRINUSE:
-                print("QVM is already running")
+                warnings.warn(
+                    "Port 5000 which is used to run QVM is already "
+                    "running a process."
+                )
             else:
-                print(e)
+                raise e
         try:
             s.bind(("127.0.0.1", 5555))
             subprocess.Popen(["quilc", "-S"])
         except socket.error as e:
-            if e.errno == errno.EADDRINUSE:
-                print("Quilc is already running")
+            """TODO: figure out why quilc sometimes throws EINVAL error"""
+            if e.errno == errno.EADDRINUSE or e.errno == errno.EINVAL:
+                warnings.warn(
+                    "Port 5555 which is used to run QUILC is already "
+                    "running a process."
+                )
             else:
-                print(e)
+                raise e
 
-        s.close()
-
-    def run_circuit_and_measure(self, circuit, n_samples: int):
+    def run_circuit_and_measure(self, circuit: Circuit, n_samples: int) -> Measurements:
         """Run a circuit and measure a certain number of bitstrings. Note: the number
         of bitstrings measured is derived from self.n_samples
 
@@ -60,7 +67,9 @@ class ForestSimulator(QuantumSimulator):
         bitstrings = [tuple(b) for b in bitstrings.tolist()]
         return Measurements(bitstrings)
 
-    def get_exact_expectation_values(self, circuit, qubit_operator):
+    def get_exact_expectation_values(
+        self, circuit: Circuit, qubit_operator: QubitOperator
+    ) -> ExpectationValues:
         self.number_of_jobs_run += 1
         self.number_of_circuits_run += 1
         if self.device_name != "wavefunction-simulator":
@@ -92,7 +101,9 @@ class ForestSimulator(QuantumSimulator):
     def _get_wavefunction_from_native_circuit(
         self, circuit: Circuit, initial_state: StateVector
     ) -> StateVector:
-        if not np.array_equal(initial_state, [1] + [0] * (len(initial_state) - 1)):
+        if not np.array_equal(
+            np.array(initial_state), [1] + [0] * (len(initial_state) - 1)
+        ):
             raise ValueError(
                 "ForestSimulator does not support starting simulations from state "
                 "other than |0>. In particular, it currently does not support "
@@ -102,6 +113,12 @@ class ForestSimulator(QuantumSimulator):
         cxn = get_forest_connection(self.device_name, self.seed)
         wavefunction = cxn.wavefunction(export_to_pyquil(circuit))
         return flip_amplitudes(wavefunction.amplitudes)
+
+
+def kill_subprocesses():
+    """Kills all instances of QVM and QUILC using pkill command."""
+    subprocess.run(["pkill", "qvm"])
+    subprocess.run(["pkill", "quilc"])
 
 
 def get_forest_connection(device_name: str, seed=None):

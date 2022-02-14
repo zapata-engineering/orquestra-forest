@@ -1,7 +1,5 @@
-import numpy as np
 import pytest
 from openfermion.ops import QubitOperator
-from pyquil.wavefunction import Wavefunction
 from qeforest.simulator import ForestSimulator
 from zquantum.core.circuits import CNOT, Circuit, H, X
 from zquantum.core.interfaces.backend_test import (
@@ -11,29 +9,32 @@ from zquantum.core.interfaces.backend_test import (
 
 
 @pytest.fixture(
+    scope="module",
     params=[
         {"device_name": "wavefunction-simulator"},
         {"device_name": "3q-qvm"},
         {"device_name": "3q-noisy-qvm"},
-    ]
+    ],
 )
 def backend(request):
     return ForestSimulator(**request.param)
 
 
 @pytest.fixture(
+    scope="module",
     params=[
         {"device_name": "3q-qvm"},
-    ]
+    ],
 )
 def backend_for_gates_test(request):
     return ForestSimulator(**request.param)
 
 
 @pytest.fixture(
+    scope="module",
     params=[
         {"device_name": "wavefunction-simulator"},
-    ]
+    ],
 )
 def wf_simulator(request):
     return ForestSimulator(**request.param)
