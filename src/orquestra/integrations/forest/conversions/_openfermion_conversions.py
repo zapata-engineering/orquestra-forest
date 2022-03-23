@@ -19,7 +19,7 @@ Translates OpenFermion Objects to pyQuil objects
 """
 from typing import Union
 
-from openfermion.ops import QubitOperator
+from zquantum.core.openfermion.ops import QubitOperator
 from pyquil.paulis import PauliSum, PauliTerm
 
 

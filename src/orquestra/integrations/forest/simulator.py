@@ -4,7 +4,7 @@ import subprocess
 import warnings
 
 import numpy as np
-from openfermion.ops import QubitOperator
+from zquantum.core.openfermion.ops import QubitOperator
 from pyquil.api import WavefunctionSimulator, get_qc
 from qeforest.conversions import export_to_pyquil, qubitop_to_pyquilpauli
 from zquantum.core.circuits import Circuit

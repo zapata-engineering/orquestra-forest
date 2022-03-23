@@ -17,14 +17,14 @@
 
 import numpy as np
 import pytest
-from openfermion.ops import (
+from zquantum.core.openfermion.ops import (
     FermionOperator,
     InteractionOperator,
     InteractionRDM,
     QubitOperator,
 )
-from openfermion.transforms import jordan_wigner
-from openfermion.utils import hermitian_conjugated
+from zquantum.core.openfermion.transforms import jordan_wigner
+from zquantum.core.openfermion.utils import hermitian_conjugated
 from pyquil.paulis import PauliSum, PauliTerm
 from qeforest.conversions import pyquilpauli_to_qubitop, qubitop_to_pyquilpauli
 
