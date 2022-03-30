@@ -2,14 +2,15 @@ import errno
 import socket
 import subprocess
 import warnings
+from typing import cast
 
 import numpy as np
-from openfermion.ops import QubitOperator
 from pyquil.api import WavefunctionSimulator, get_qc
 from qeforest.conversions import export_to_pyquil, qubitop_to_pyquilpauli
 from zquantum.core.circuits import Circuit
 from zquantum.core.interfaces.backend import QuantumSimulator, StateVector
 from zquantum.core.measurement import ExpectationValues, Measurements
+from zquantum.core.openfermion.ops import QubitOperator, SymbolicOperator
 from zquantum.core.wavefunction import flip_amplitudes
 
 
@@ -68,7 +69,7 @@ class ForestSimulator(QuantumSimulator):
         return Measurements(bitstrings)
 
     def get_exact_expectation_values(
-        self, circuit: Circuit, qubit_operator: QubitOperator
+        self, circuit: Circuit, qubit_operator: SymbolicOperator
     ) -> ExpectationValues:
         self.number_of_jobs_run += 1
         self.number_of_circuits_run += 1
@@ -84,7 +85,7 @@ class ForestSimulator(QuantumSimulator):
         if len(qubit_operator.terms) == 0:
             return ExpectationValues(np.zeros((0,)))
 
-        pauli_sum = qubitop_to_pyquilpauli(qubit_operator)
+        pauli_sum = qubitop_to_pyquilpauli(cast(QubitOperator, qubit_operator))
         expectation_values = np.real(
             cxn.expectation(export_to_pyquil(circuit), pauli_sum.terms)
         )
