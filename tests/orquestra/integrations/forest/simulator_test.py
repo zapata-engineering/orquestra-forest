@@ -1,11 +1,11 @@
 import pytest
-from zquantum.core.openfermion.ops import QubitOperator
 from qeforest.simulator import ForestSimulator
 from zquantum.core.circuits import CNOT, Circuit, H, X
 from zquantum.core.interfaces.backend_test import (
     QuantumSimulatorGatesTest,
     QuantumSimulatorTests,
 )
+from zquantum.core.openfermion.ops import QubitOperator
 
 
 @pytest.fixture(
