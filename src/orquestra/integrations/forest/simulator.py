@@ -5,13 +5,14 @@ import warnings
 from typing import cast
 
 import numpy as np
+from orquestra.quantum.api.backend import QuantumSimulator, StateVector
+from orquestra.quantum.circuits import Circuit
+from orquestra.quantum.measurements import ExpectationValues, Measurements
+from orquestra.quantum.openfermion.ops import QubitOperator, SymbolicOperator
+from orquestra.quantum.wavefunction import flip_amplitudes
 from pyquil.api import WavefunctionSimulator, get_qc
-from qeforest.conversions import export_to_pyquil, qubitop_to_pyquilpauli
-from zquantum.core.circuits import Circuit
-from zquantum.core.interfaces.backend import QuantumSimulator, StateVector
-from zquantum.core.measurement import ExpectationValues, Measurements
-from zquantum.core.openfermion.ops import QubitOperator, SymbolicOperator
-from zquantum.core.wavefunction import flip_amplitudes
+
+from .conversions import export_to_pyquil, qubitop_to_pyquilpauli
 
 
 class ForestSimulator(QuantumSimulator):

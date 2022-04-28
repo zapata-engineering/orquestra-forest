@@ -1,11 +1,12 @@
 import pytest
-from qeforest.simulator import ForestSimulator
-from zquantum.core.circuits import CNOT, Circuit, H, X
-from zquantum.core.interfaces.backend_test import (
+from orquestra.quantum.api.backend_test import (
     QuantumSimulatorGatesTest,
     QuantumSimulatorTests,
 )
-from zquantum.core.openfermion.ops import QubitOperator
+from orquestra.quantum.circuits import CNOT, Circuit, H, X
+from orquestra.quantum.openfermion.ops import QubitOperator
+
+from orquestra.integrations.forest.simulator import ForestSimulator
 
 
 @pytest.fixture(

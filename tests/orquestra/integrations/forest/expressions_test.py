@@ -1,9 +1,12 @@
 """Test cases for decomposing PyQuil expression into our native expressions."""
 import numpy as np
 import pytest
+from orquestra.quantum.circuits.symbolic.expressions import FunctionCall, Symbol
 from pyquil import quil, quilatom
-from qeforest.conversions._expressions import expression_from_pyquil
-from zquantum.core.circuits.symbolic.expressions import FunctionCall, Symbol
+
+from orquestra.integrations.forest.conversions._expressions import (
+    expression_from_pyquil,
+)
 
 
 @pytest.mark.parametrize("number", [3, 4.0, 1j, 3.0 - 2j])

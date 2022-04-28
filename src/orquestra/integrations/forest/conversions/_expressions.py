@@ -4,13 +4,13 @@ from functools import singledispatch
 from numbers import Number
 
 import pyquil
-from pyquil import quilatom
-from zquantum.core.circuits.symbolic.expressions import (
+from orquestra.quantum.circuits.symbolic.expressions import (
     ExpressionDialect,
     FunctionCall,
     Symbol,
     reduction,
 )
+from pyquil import quilatom
 
 QUIL_BINARY_EXPRESSION_NAMES = {
     quilatom.Add: "add",

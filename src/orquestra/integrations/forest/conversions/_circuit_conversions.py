@@ -4,12 +4,12 @@ from typing import Iterable, Mapping, Tuple, Union
 import numpy as np
 import pyquil
 import sympy
-from zquantum.core.circuits import _builtin_gates, _circuit, _gates
-from zquantum.core.circuits.symbolic.sympy_expressions import (
+from orquestra.quantum.circuits import _builtin_gates, _circuit, _gates
+from orquestra.quantum.circuits.symbolic.sympy_expressions import (
     SYMPY_DIALECT,
     expression_from_sympy,
 )
-from zquantum.core.circuits.symbolic.translations import translate_expression
+from orquestra.quantum.circuits.symbolic.translations import translate_expression
 
 from ._expressions import QUIL_DIALECT, expression_from_pyquil
 
@@ -59,7 +59,7 @@ def import_from_pyquil(program: pyquil.Program):
     }
     if len(custom_names) != len(custom_defs):
         raise ValueError(
-            "Can't import circuits with non-unique gate definition names to ZQuantum: "
+            "Can't import circuits with non-unique gate definition names to orquestra: "
             f"{custom_names}"
         )
 
@@ -139,7 +139,7 @@ def _import_pyquil_qubits(qubits):
     return tuple(qubit.index for qubit in qubits)
 
 
-def _export_zquantum_gate_definition(gate_def: _gates.CustomGateDefinition):
+def _export_orquestra_gate_definition(gate_def: _gates.CustomGateDefinition):
     return pyquil.quilbase.DefGate(
         gate_def.gate_name,
         _export_matrix(gate_def.matrix),
@@ -151,7 +151,7 @@ def _create_pyquil_custom_gate_definitions(
     custom_gate_defs: Iterable[_gates.CustomGateDefinition],
 ):
     return {
-        gate_def.gate_name: _export_zquantum_gate_definition(gate_def)
+        gate_def.gate_name: _export_orquestra_gate_definition(gate_def)
         for gate_def in custom_gate_defs
     }
 

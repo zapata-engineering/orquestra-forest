@@ -2,8 +2,8 @@ import numpy as np
 import pyquil
 import pytest
 import sympy
-from qeforest.conversions import export_to_pyquil, import_from_pyquil
-from zquantum.core.circuits import _builtin_gates, _circuit, _gates
+from orquestra.interfaces.forest.conversions import export_to_pyquil, import_from_pyquil
+from orquestra.quantum.circuits import _builtin_gates, _circuit, _gates
 
 SYMPY_GAMMA = sympy.Symbol("gamma")
 QUIL_GAMMA = pyquil.quil.Parameter("gamma")
@@ -353,13 +353,13 @@ EQUIVALENT_PARAMETRIZED_CIRCUITS = [
 
 class TestExportingToPyQuil:
     @pytest.mark.parametrize(
-        "zquantum_circuit, pyquil_circuit",
+        "orquestra_circuit, pyquil_circuit",
         [*EQUIVALENT_CIRCUITS, *EQUIVALENT_PARAMETRIZED_CIRCUITS],
     )
     def test_exporting_circuit_gives_equivalent_circuit(
-        self, zquantum_circuit, pyquil_circuit
+        self, orquestra_circuit, pyquil_circuit
     ):
-        exported = export_to_pyquil(zquantum_circuit)
+        exported = export_to_pyquil(orquestra_circuit)
         assert exported == pyquil_circuit, (
             exported.out(),
             pyquil_circuit.out(),
@@ -368,11 +368,11 @@ class TestExportingToPyQuil:
 
 class TestImportingFromPyQuil:
     @pytest.mark.parametrize(
-        "zquantum_circuit, pyquil_circuit",
+        "orquestra_circuit, pyquil_circuit",
         [*EQUIVALENT_CIRCUITS, *EQUIVALENT_PARAMETRIZED_CIRCUITS],
     )
     def test_importing_circuit_gives_equivalent_circuit(
-        self, zquantum_circuit, pyquil_circuit
+        self, orquestra_circuit, pyquil_circuit
     ):
         imported = import_from_pyquil(pyquil_circuit)
-        assert imported == zquantum_circuit
+        assert imported == orquestra_circuit
