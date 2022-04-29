@@ -19,6 +19,10 @@ class ForestSimulator(QuantumSimulator):
     supports_batching = False
 
     def __init__(self, device_name: str, seed: int = None, nthreads: int = 1):
+        warnings.warn(
+            "Tests for ForestSimulator are currently disabled, "
+            "so there might be some bugs that we have not been able to catch."
+        )
         super().__init__()
         self.nthreads = nthreads
         self.device_name = device_name
