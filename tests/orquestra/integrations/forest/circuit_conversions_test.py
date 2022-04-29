@@ -2,8 +2,12 @@ import numpy as np
 import pyquil
 import pytest
 import sympy
-from orquestra.interfaces.forest.conversions import export_to_pyquil, import_from_pyquil
 from orquestra.quantum.circuits import _builtin_gates, _circuit, _gates
+
+from orquestra.integrations.forest.conversions import (
+    export_to_pyquil,
+    import_from_pyquil,
+)
 
 SYMPY_GAMMA = sympy.Symbol("gamma")
 QUIL_GAMMA = pyquil.quil.Parameter("gamma")
