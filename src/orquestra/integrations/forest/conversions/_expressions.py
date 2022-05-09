@@ -1,3 +1,6 @@
+################################################################################
+# © Copyright 2021-2022 Zapata Computing Inc.
+################################################################################
 """Utilities related to Quil based symbolic expressions."""
 import operator
 from functools import singledispatch

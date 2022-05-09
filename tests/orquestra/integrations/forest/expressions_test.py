@@ -1,3 +1,6 @@
+################################################################################
+# © Copyright 2021-2022 Zapata Computing Inc.
+################################################################################
 """Test cases for decomposing PyQuil expression into our native expressions."""
 import numpy as np
 import pytest
