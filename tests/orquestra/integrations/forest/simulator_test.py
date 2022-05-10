@@ -1,3 +1,6 @@
+################################################################################
+# © Copyright 2021-2022 Zapata Computing Inc.
+################################################################################
 import pytest
 from orquestra.quantum.api.backend_test import (
     QuantumSimulatorGatesTest,
