@@ -111,7 +111,7 @@ def pyquil_rh_definition():
 
 
 def pyquil_u3_definition():
-    # Note: need to add an extra global phase to match to z-quantum's definition
+    # Note: need to add an extra global phase to match to orquestra's definition
     cos_term = pyquil.quilatom.quil_cos(0.5 * QUIL_THETA_0)
     sin_term = pyquil.quilatom.quil_sin(0.5 * QUIL_THETA_0)
 
