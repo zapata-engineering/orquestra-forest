@@ -1,6 +1,6 @@
 # orquestra-forest
 
-An Orquestra Resource for Rigetti's Forest
+`orquestra-forest` is a [Zapata](https://www.zapatacomputing.com) library holding modules for integrating forest with [Orquestra](https://www.zapatacomputing.com/orquestra/).
 
 ## Overview
 
