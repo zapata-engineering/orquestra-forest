@@ -34,7 +34,6 @@ jobs:
         with:
           repository: zapatacomputing/orquestra-quantum
           path: orquestra-quantum
-          ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Run publish release action
         uses: ./subtrees/z_quantum_actions/actions/publish-release
