@@ -23,7 +23,8 @@ Translates Orquestra pauli representation objects to pyQuil objects and vice ver
 from typing import Union
 
 from orquestra.quantum.wip.operators import PauliRepresentation, PauliSum, PauliTerm
-from pyquil.paulis import PauliSum as PyquilPauliSum, PauliTerm as PyquilPauliTerm
+from pyquil.paulis import PauliSum as PyquilPauliSum
+from pyquil.paulis import PauliTerm as PyquilPauliTerm
 
 
 def orq_to_pyquil(

@@ -25,14 +25,13 @@ from orquestra.quantum.openfermion.ops import (
     InteractionOperator,
     InteractionRDM,
 )
-from pyquil.paulis import PauliSum as PyquilPauliSum, PauliTerm as PyquilPauliTerm
+from orquestra.quantum.wip.operators import PauliSum as OrqPauliSum
+from orquestra.quantum.wip.operators import PauliTerm as OrqPauliTerm
+from pyquil.paulis import PauliSum as PyquilPauliSum
+from pyquil.paulis import PauliTerm as PyquilPauliTerm
 from pyquil.quilatom import QubitPlaceholder
-from orquestra.quantum.wip.operators import (
-    PauliSum as OrqPauliSum,
-    PauliTerm as OrqPauliTerm,
-)
 
-from orquestra.integrations.forest.conversions import pyquil_to_orq, orq_to_pyquil
+from orquestra.integrations.forest.conversions import orq_to_pyquil, pyquil_to_orq
 
 
 def test_translation_type_enforcement():
