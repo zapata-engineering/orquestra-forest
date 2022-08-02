@@ -26,7 +26,7 @@ from orquestra.quantum.openfermion.ops import (
     InteractionRDM,
 )
 from pyquil.paulis import PauliSum as PyquilPauliSum, PauliTerm as PyquilPauliTerm
-from pyquil.quilatom import Expression, QubitPlaceholder
+from pyquil.quilatom import QubitPlaceholder
 from orquestra.quantum.wip.operators import (
     PauliSum as OrqPauliSum,
     PauliTerm as OrqPauliTerm,
