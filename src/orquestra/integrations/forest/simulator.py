@@ -13,6 +13,7 @@ from orquestra.quantum.measurements import ExpectationValues, Measurements
 from orquestra.quantum.wip.operators import PauliRepresentation
 from orquestra.quantum.wavefunction import flip_amplitudes
 from pyquil.api import WavefunctionSimulator, get_qc
+from pyquil.paulis import PauliSum
 
 from .conversions import export_to_pyquil, orq_to_pyquil
 
@@ -92,15 +93,18 @@ class ForestSimulator(QuantumSimulator):
         if len(qubit_operator.terms) == 0:
             return ExpectationValues(np.zeros((0,)))
 
-        pauli_sum = orq_to_pyquil(qubit_operator)
+        pauli_op = orq_to_pyquil(qubit_operator)
         expectation_values = np.real(
-            cxn.expectation(export_to_pyquil(circuit), pauli_sum.terms)
+            cxn.expectation(
+                export_to_pyquil(circuit),
+                pauli_op.terms if isinstance(pauli_op, PauliSum) else [pauli_op],
+            )
         )
 
-        if expectation_values.shape[0] != len(pauli_sum):
+        if expectation_values.shape[0] != len(pauli_op):
             raise (
                 RuntimeError(
-                    f"Expected {len(pauli_sum)} expectation values but received "
+                    f"Expected {len(pauli_op)} expectation values but received "
                     f"{expectation_values.shape[0]}."
                 )
             )

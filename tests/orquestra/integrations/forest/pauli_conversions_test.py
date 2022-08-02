@@ -26,7 +26,7 @@ from orquestra.quantum.openfermion.ops import (
     InteractionRDM,
 )
 from pyquil.paulis import PauliSum as PyquilPauliSum, PauliTerm as PyquilPauliTerm
-from pyquil.quilatom import QubitPlaceholder
+from pyquil.quilatom import Expression, QubitPlaceholder
 from orquestra.quantum.wip.operators import (
     PauliSum as OrqPauliSum,
     PauliTerm as OrqPauliTerm,
@@ -150,7 +150,7 @@ def test_pyquil_to_orq_type_enforced():
         pyquil_to_orq(interact_rdm)
 
 
-def test_pyquil_to_orq_qubit_index_not_integer():
+def test_pyquil_to_orq_raises_error_when_qubit_index_not_integer():
     with pytest.raises(ValueError) as e:
         pyquil_to_orq(PyquilPauliTerm("X", QubitPlaceholder()))
         assert "must be integer" in e.value

@@ -20,7 +20,7 @@
 """
 Translates Orquestra pauli representation objects to pyQuil objects and vice versa.
 """
-from typing import Type, Union
+from typing import Union
 
 from orquestra.quantum.wip.operators import PauliRepresentation, PauliSum, PauliTerm
 from pyquil.paulis import PauliSum as PyquilPauliSum, PauliTerm as PyquilPauliTerm
@@ -94,7 +94,7 @@ def _orq_to_pyquil_term(orq_term: PauliTerm) -> PyquilPauliTerm:
 
 def _pyquil_to_orq_term(pyquil_term: PyquilPauliTerm) -> PauliTerm:
     try:
-        return PauliTerm(pyquil_term._ops, pyquil_term.coefficient)
+        return PauliTerm(pyquil_term._ops, pyquil_term.coefficient)  # type: ignore
     except TypeError:
         raise ValueError(
             "All qubit indices of pyQuil pauli must be integers. "
