@@ -7,7 +7,7 @@ from orquestra.quantum.api.backend_test import (
     QuantumSimulatorTests,
 )
 from orquestra.quantum.circuits import CNOT, Circuit, H, X
-from orquestra.quantum.openfermion.ops import QubitOperator
+from orquestra.quantum.wip.operators import PauliTerm
 
 from orquestra.integrations.forest.simulator import ForestSimulator
 
@@ -48,7 +48,7 @@ def wf_simulator(request):
 class TestForest(QuantumSimulatorTests):
     def test_exact_expectation_values_without_wavefunction_simulator(self, backend):
         if backend.device_name != "wavefunction-simulator":
-            operator = QubitOperator("Z0 Z1")
+            operator = PauliTerm("Z0*Z1")
             circuit = Circuit([X(0), X(1)])
             with pytest.raises(Exception):
                 backend.get_exact_expectation_values(circuit, operator)

@@ -5,17 +5,16 @@ import errno
 import socket
 import subprocess
 import warnings
-from typing import cast
 
 import numpy as np
 from orquestra.quantum.api.backend import QuantumSimulator, StateVector
 from orquestra.quantum.circuits import Circuit
 from orquestra.quantum.measurements import ExpectationValues, Measurements
-from orquestra.quantum.openfermion.ops import QubitOperator, SymbolicOperator
+from orquestra.quantum.wip.operators import PauliRepresentation
 from orquestra.quantum.wavefunction import flip_amplitudes
 from pyquil.api import WavefunctionSimulator, get_qc
 
-from .conversions import export_to_pyquil, qubitop_to_pyquilpauli
+from .conversions import export_to_pyquil, orq_to_pyquil
 
 
 class ForestSimulator(QuantumSimulator):
@@ -77,7 +76,7 @@ class ForestSimulator(QuantumSimulator):
         return Measurements(bitstrings)
 
     def get_exact_expectation_values(
-        self, circuit: Circuit, qubit_operator: SymbolicOperator
+        self, circuit: Circuit, qubit_operator: PauliRepresentation
     ) -> ExpectationValues:
         self.number_of_jobs_run += 1
         self.number_of_circuits_run += 1
@@ -93,7 +92,7 @@ class ForestSimulator(QuantumSimulator):
         if len(qubit_operator.terms) == 0:
             return ExpectationValues(np.zeros((0,)))
 
-        pauli_sum = qubitop_to_pyquilpauli(cast(QubitOperator, qubit_operator))
+        pauli_sum = orq_to_pyquil(qubit_operator)
         expectation_values = np.real(
             cxn.expectation(export_to_pyquil(circuit), pauli_sum.terms)
         )
