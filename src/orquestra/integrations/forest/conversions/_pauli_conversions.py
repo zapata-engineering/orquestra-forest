@@ -86,7 +86,7 @@ def pyquil_to_orq(
 
 def _orq_to_pyquil_term(orq_term: PauliTerm) -> PyquilPauliTerm:
     base_term = PyquilPauliTerm("I", 0)
-    for idx, op in orq_term._ops.items():
+    for idx, op in orq_term.operations:
         product = base_term * PyquilPauliTerm(op, idx)
         assert isinstance(product, PyquilPauliTerm)
         base_term = product
