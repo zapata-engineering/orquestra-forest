@@ -20,13 +20,8 @@
 
 import numpy as np
 import pytest
-from orquestra.quantum.openfermion.ops import (
-    FermionOperator,
-    InteractionOperator,
-    InteractionRDM,
-)
-from orquestra.quantum.wip.operators import PauliSum as OrqPauliSum
-from orquestra.quantum.wip.operators import PauliTerm as OrqPauliTerm
+from orquestra.quantum.operators import PauliSum as OrqPauliSum
+from orquestra.quantum.operators import PauliTerm as OrqPauliTerm
 from pyquil.paulis import PauliSum as PyquilPauliSum
 from pyquil.paulis import PauliTerm as PyquilPauliTerm
 from pyquil.quilatom import QubitPlaceholder
@@ -38,26 +33,31 @@ def test_translation_type_enforcement():
     """
     Make sure type check works
     """
-    create_one = FermionOperator("1^")
-    empty_one_body = np.zeros((2, 2))
-    empty_two_body = np.zeros((2, 2, 2, 2))
-    interact_one = InteractionOperator(1, empty_one_body, empty_two_body)
-    interact_rdm = InteractionRDM(empty_one_body, empty_two_body)
+    sample_str = "Z0*Z1"
+    sample_int = 1
+    pyquil_term = PyquilPauliTerm("X", 0)
+    pyquil_sum = PyquilPauliSum([pyquil_term])
 
     with pytest.raises(TypeError):
-        orq_to_pyquil(create_one)
+        orq_to_pyquil(sample_str)
     with pytest.raises(TypeError):
-        orq_to_pyquil(interact_one)
+        orq_to_pyquil(sample_int)
     with pytest.raises(TypeError):
-        orq_to_pyquil(interact_rdm)
+        orq_to_pyquil(pyquil_term)
+    with pytest.raises(TypeError):
+        orq_to_pyquil(pyquil_sum)
 
     # don't accept anything other than pyquil PauliSum or PauliTerm
+    orq_term = OrqPauliTerm("X0*Y5")
+    orq_sum = OrqPauliSum("0.5*X0*Z1*X2 + 0.5*Y0*Z1*Y2")
     with pytest.raises(TypeError):
-        orq_to_pyquil(create_one)
+        pyquil_to_orq(sample_str)
     with pytest.raises(TypeError):
-        orq_to_pyquil(interact_one)
+        pyquil_to_orq(sample_int)
     with pytest.raises(TypeError):
-        orq_to_pyquil(interact_rdm)
+        pyquil_to_orq(orq_term)
+    with pytest.raises(TypeError):
+        pyquil_to_orq(orq_sum)
 
 
 def test_orq_paulisum_to_pyquil():
@@ -123,30 +123,6 @@ def test_pyquil_paulisum_to_orq():
     test_orq_term = pyquil_to_orq(pyquil_term)
     assert test_orq_term == orq_term
     assert isinstance(test_orq_term, OrqPauliSum)
-
-
-def test_pyquil_to_orq_type_enforced():
-    """Enforce the appropriate type"""
-    create_one = FermionOperator("1^")
-    empty_one_body = np.zeros((2, 2))
-    empty_two_body = np.zeros((2, 2, 2, 2))
-    interact_one = InteractionOperator(1, empty_one_body, empty_two_body)
-    interact_rdm = InteractionRDM(empty_one_body, empty_two_body)
-
-    with pytest.raises(TypeError):
-        pyquil_to_orq(create_one)
-    with pytest.raises(TypeError):
-        pyquil_to_orq(interact_one)
-    with pytest.raises(TypeError):
-        pyquil_to_orq(interact_rdm)
-
-    # don't accept anything other than pyquil PyquilPauliSum or PyquilPauliTerm
-    with pytest.raises(TypeError):
-        pyquil_to_orq(create_one)
-    with pytest.raises(TypeError):
-        pyquil_to_orq(interact_one)
-    with pytest.raises(TypeError):
-        pyquil_to_orq(interact_rdm)
 
 
 def test_pyquil_to_orq_raises_error_when_qubit_index_not_integer():

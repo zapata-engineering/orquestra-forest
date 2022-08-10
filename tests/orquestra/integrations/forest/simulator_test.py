@@ -7,7 +7,7 @@ from orquestra.quantum.api.backend_test import (
     QuantumSimulatorTests,
 )
 from orquestra.quantum.circuits import CNOT, Circuit, H, X
-from orquestra.quantum.wip.operators import PauliTerm
+from orquestra.quantum.operators import PauliTerm
 
 from orquestra.integrations.forest.simulator import ForestSimulator
 
