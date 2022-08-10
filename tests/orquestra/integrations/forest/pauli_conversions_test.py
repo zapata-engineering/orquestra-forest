@@ -33,15 +33,15 @@ def test_translation_type_enforcement():
     """
     Make sure type check works
     """
-    string = "Z0*Z1"
-    integer = 1
+    sample_str = "Z0*Z1"
+    sample_int = 1
     pyquil_term = PyquilPauliTerm("X", 0)
     pyquil_sum = PyquilPauliSum([pyquil_term])
 
     with pytest.raises(TypeError):
-        orq_to_pyquil(string)
+        orq_to_pyquil(sample_str)
     with pytest.raises(TypeError):
-        orq_to_pyquil(integer)
+        orq_to_pyquil(sample_int)
     with pytest.raises(TypeError):
         orq_to_pyquil(pyquil_term)
     with pytest.raises(TypeError):
@@ -51,9 +51,9 @@ def test_translation_type_enforcement():
     orq_term = OrqPauliTerm("X0*Y5")
     orq_sum = OrqPauliSum("0.5*X0*Z1*X2 + 0.5*Y0*Z1*Y2")
     with pytest.raises(TypeError):
-        pyquil_to_orq(string)
+        pyquil_to_orq(sample_str)
     with pytest.raises(TypeError):
-        pyquil_to_orq(integer)
+        pyquil_to_orq(sample_int)
     with pytest.raises(TypeError):
         pyquil_to_orq(orq_term)
     with pytest.raises(TypeError):
