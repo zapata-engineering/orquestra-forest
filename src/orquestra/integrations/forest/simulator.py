@@ -10,8 +10,8 @@ import numpy as np
 from orquestra.quantum.api.backend import QuantumSimulator, StateVector
 from orquestra.quantum.circuits import Circuit
 from orquestra.quantum.measurements import ExpectationValues, Measurements
-from orquestra.quantum.wavefunction import flip_amplitudes
 from orquestra.quantum.operators import PauliRepresentation
+from orquestra.quantum.wavefunction import flip_amplitudes
 from pyquil.api import WavefunctionSimulator, get_qc
 from pyquil.paulis import PauliSum
 
