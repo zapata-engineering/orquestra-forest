@@ -7,10 +7,11 @@ import subprocess
 import warnings
 
 import numpy as np
-from orquestra.quantum.api.backend import QuantumSimulator, StateVector
+from orquestra.quantum.api import BaseWavefunctionSimulator
 from orquestra.quantum.circuits import Circuit
 from orquestra.quantum.measurements import ExpectationValues, Measurements
 from orquestra.quantum.operators import PauliRepresentation
+from orquestra.quantum.typing import StateVector
 from orquestra.quantum.wavefunction import flip_amplitudes
 from pyquil.api import WavefunctionSimulator, get_qc
 from pyquil.paulis import PauliSum
@@ -18,7 +19,7 @@ from pyquil.paulis import PauliSum
 from .conversions import export_to_pyquil, orq_to_pyquil
 
 
-class ForestSimulator(QuantumSimulator):
+class ForestSimulator(BaseWavefunctionSimulator):
     supports_batching = False
 
     def __init__(self, device_name: str, seed: int = None, nthreads: int = 1):
@@ -56,59 +57,6 @@ class ForestSimulator(QuantumSimulator):
                 )
             else:
                 raise e
-
-    def run_circuit_and_measure(self, circuit: Circuit, n_samples: int) -> Measurements:
-        """Run a circuit and measure a certain number of bitstrings. Note: the number
-        of bitstrings measured is derived from self.n_samples
-
-        Args:
-            circuit: the circuit to prepare the state
-            n_samples: The number of samples to measure.
-        Returns:
-            a list of bitstrings (a list of tuples)
-        """
-        super().run_circuit_and_measure(circuit, n_samples=n_samples)
-        cxn = get_forest_connection(self.device_name, self.seed)
-        bitstrings = cxn.run_and_measure(export_to_pyquil(circuit), trials=n_samples)
-        if isinstance(bitstrings, dict):
-            bitstrings = np.vstack([bitstrings[q] for q in sorted(cxn.qubits())]).T
-
-        bitstrings = [tuple(b) for b in bitstrings.tolist()]
-        return Measurements(bitstrings)
-
-    def get_exact_expectation_values(
-        self, circuit: Circuit, qubit_operator: PauliRepresentation
-    ) -> ExpectationValues:
-        self.number_of_jobs_run += 1
-        self.number_of_circuits_run += 1
-        if self.device_name != "wavefunction-simulator":
-            raise RuntimeError(
-                "To compute exact expectation values, the device name must be "
-                '"wavefunction-simulator". The device name is currently '
-                f"{self.device_name}."
-            )
-        cxn = get_forest_connection(self.device_name, self.seed)
-
-        # Pyquil does not support PauliSums with no terms.
-        if len(qubit_operator.terms) == 0:
-            return ExpectationValues(np.zeros((0,)))
-
-        pauli_op = orq_to_pyquil(qubit_operator)
-        expectation_values = np.real(
-            cxn.expectation(
-                export_to_pyquil(circuit),
-                pauli_op.terms if isinstance(pauli_op, PauliSum) else [pauli_op],
-            )
-        )
-
-        if expectation_values.shape[0] != len(pauli_op):
-            raise (
-                RuntimeError(
-                    f"Expected {len(pauli_op)} expectation values but received "
-                    f"{expectation_values.shape[0]}."
-                )
-            )
-        return ExpectationValues(expectation_values)
 
     def _get_wavefunction_from_native_circuit(
         self, circuit: Circuit, initial_state: StateVector

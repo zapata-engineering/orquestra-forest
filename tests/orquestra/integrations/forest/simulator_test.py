@@ -2,10 +2,6 @@
 # © Copyright 2021-2022 Zapata Computing Inc.
 ################################################################################
 import pytest
-from orquestra.quantum.api.backend_test import (
-    QuantumSimulatorGatesTest,
-    QuantumSimulatorTests,
-)
 from orquestra.quantum.circuits import CNOT, Circuit, H, X
 from orquestra.quantum.operators import PauliTerm
 
@@ -45,7 +41,7 @@ def wf_simulator(request):
 
 
 @pytest.mark.xfail
-class TestForest(QuantumSimulatorTests):
+class TestForest:
     def test_exact_expectation_values_without_wavefunction_simulator(self, backend):
         if backend.device_name != "wavefunction-simulator":
             operator = PauliTerm("Z0*Z1")
@@ -74,8 +70,3 @@ class TestForest(QuantumSimulatorTests):
     @pytest.mark.xfail
     def test_get_wavefunction_uses_provided_initial_state(self, wf_simulator):
         super().test_get_wavefunction_uses_provided_initial_state(wf_simulator)
-
-
-@pytest.mark.xfail
-class TestForestGates(QuantumSimulatorGatesTest):
-    pass
