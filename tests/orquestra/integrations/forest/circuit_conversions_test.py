@@ -135,9 +135,22 @@ def pyquil_u3_definition():
     )
 
 
+def pyquil_sqrt_x_definition():
+    return pyquil.quil.DefGate(
+        "SQRT-X",
+        np.array(
+            [
+                [0.5 + 0.5j, 0.5 - 0.5j],
+                [0.5 - 0.5j, 0.5 + 0.5j],
+            ]
+        ),
+    )
+
+
 PYQUIL_XX = pyquil_xx_definition()
 PYQUIL_RH = pyquil_rh_definition()
 PYQUIL_U3 = pyquil_u3_definition()
+PYQUIL_SQRT_X = pyquil_sqrt_x_definition()
 
 
 EQUIVALENT_CIRCUITS = [
@@ -196,14 +209,8 @@ EQUIVALENT_CIRCUITS = [
         _circuit.Circuit(
             [SQRT_X_DEF()(3)],
         ),
-        pyquil.Program([("SQRT-X", 3)]).defgate(
-            "SQRT-X",
-            np.array(
-                [
-                    [0.5 + 0.5j, 0.5 - 0.5j],
-                    [0.5 - 0.5j, 0.5 + 0.5j],
-                ]
-            ),
+        pyquil.Program(
+            [PYQUIL_SQRT_X, PYQUIL_SQRT_X.get_constructor()(3)],
         ),
     ),
     (
